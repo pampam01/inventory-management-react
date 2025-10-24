@@ -20,11 +20,12 @@ export const Layout = ({ children }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-blue-100 p-2 rounded-lg">
-                <Package className="w-6 h-6 text-blue-600" />
+                {/* <Package className="w-6 h-6 text-blue-600" /> */}
+                <img src="./unama.svg" alt="" className="w-6 h-6"/>
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-800">
-                  Inventory Management System
+                  Inventory Gudang Unama
                 </h1>
                 <p className="text-sm text-gray-500">
                   Sistem Manajemen Inventory Komponen
