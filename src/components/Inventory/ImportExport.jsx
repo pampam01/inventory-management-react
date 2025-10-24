@@ -56,11 +56,155 @@ export const ImportExport = () => {
     }
   }
 
-  const handleImportCSV = async (event) => {
-    const file = event.target?.files[0]
+  // const handleImportCSV = async (event) => {
+  //   const file = event.target.files
     
+  //   if (!file) {
+  //     console.log('No file selected')
+  //     return
+  //   }
+
+  //   console.log('File selected:', file.name, file.size, file.type)
+
+  //   // Validate file type
+  //   if (!file.name.toLowerCase().endsWith('.csv')) {
+  //     toast.error('File harus berformat CSV!')
+  //     // Reset file input
+  //     if (fileInputRef.current) {
+  //       fileInputRef.current.value = ''
+  //     }
+  //     return
+  //   }
+
+  //   setIsImporting(true)
+  //   toast.loading('Sedang memproses file CSV...', { id: 'import' })
+
+  //   try {
+  //     // Manual CSV parsing using FileReader
+  //     const text = await readFileAsText(file)
+  //     console.log('File content:', text.substring(0, 200) + '...')
+
+  //     if (!text.trim()) {
+  //       toast.error('File CSV kosong!', { id: 'import' })
+  //       return
+  //     }
+
+  //     // Parse CSV manually
+  //     const lines = text.trim().split('\n')
+  //     if (lines.length < 2) {
+  //       toast.error('File CSV harus memiliki header dan minimal 1 baris data!', { id: 'import' })
+  //       return
+  //     }
+
+  //     // Get headers
+  //     const headers = lines.split(',').map(h => h.trim().replace(/"/g, ''))
+  //     console.log('Headers:', headers)
+
+  //     // Parse data rows
+  //     const rows = []
+  //     for (let i = 1; i < lines.length; i++) {
+  //       const values = parseCSVLine(lines[i])
+  //       if (values.length > 0) {
+  //         const row = {}
+  //         headers.forEach((header, index) => {
+  //           row[header] = values[index] || ''
+  //         })
+  //         rows.push(row)
+  //       }
+  //     }
+
+  //     console.log('Parsed rows:', rows)
+
+  //     if (rows.length === 0) {
+  //       toast.error('Tidak ada data valid untuk diimport!', { id: 'import' })
+  //       return
+  //     }
+
+  //     // Transform and validate data
+  //     const itemsToInsert = rows
+  //       .filter(row => {
+  //         const nama = row.nama_komponen || row['Nama Komponen'] || row['nama_komponen']
+  //         return nama && nama.trim() !== ''
+  //       })
+  //       .map(row => {
+  //         const nama = row.nama_komponen || row['Nama Komponen'] || row['nama_komponen'] || ''
+  //         const deskripsi = row.deskripsi || row['Deskripsi'] || row['deskripsi'] || ''
+  //         const masuk = parseInt(row.jumlah_masuk || row['Jumlah Masuk'] || row['jumlah_masuk'] || '0') || 0
+  //         const keluar = parseInt(row.jumlah_keluar || row['Jumlah Keluar'] || row['jumlah_keluar'] || '0') || 0
+  //         const lokasi = row.lokasi_penyimpanan || row['Lokasi'] || row['lokasi_penyimpanan'] || ''
+  //         const keterangan = row.keterangan || row['Keterangan'] || row['keterangan'] || ''
+
+  //         return {
+  //           nama_komponen: nama.trim(),
+  //           deskripsi: deskripsi.trim(),
+  //           jumlah_masuk: masuk,
+  //           jumlah_keluar: keluar,
+  //           lokasi_penyimpanan: lokasi.trim(),
+  //           keterangan: keterangan.trim()
+  //         }
+  //       })
+
+  //     console.log('Items to insert:', itemsToInsert)
+
+  //     if (itemsToInsert.length === 0) {
+  //       toast.error('Tidak ada data valid dengan nama_komponen yang terisi!', { id: 'import' })
+  //       return
+  //     }
+
+  //     toast.loading(`Menyimpan ${itemsToInsert.length} item ke database...`, { id: 'import' })
+
+  //     // Insert to database in batches (Supabase has limit)
+  //     const batchSize = 10
+  //     let totalInserted = 0
+
+  //     for (let i = 0; i < itemsToInsert.length; i += batchSize) {
+  //       const batch = itemsToInsert.slice(i, i + batchSize)
+        
+  //       const { data, error } = await supabase
+  //         .from('inventory_items')
+  //         .insert(batch)
+  //         .select()
+
+  //       if (error) {
+  //         console.error('Supabase insert error:', error)
+  //         throw new Error(`Database error: ${error.message}`)
+  //       }
+
+  //       totalInserted += batch.length
+  //       console.log(`Batch ${Math.floor(i/batchSize) + 1} inserted:`, data)
+  //     }
+
+  //     // Refresh data
+  //     await fetchItems()
+      
+  //     toast.success(`${totalInserted} item berhasil diimport ke database!`, { id: 'import' })
+
+  //   } catch (error) {
+  //     console.error('Import error:', error)
+  //     toast.error(`Error importing data: ${error.message}`, { id: 'import' })
+  //   } finally {
+  //     setIsImporting(false)
+  //     // Reset file input
+  //     if (fileInputRef.current) {
+  //       fileInputRef.current.value = ''
+  //     }
+  //   }
+  // }
+
+  // Helper function to read file as text
+
+
+const handleImportCSV = async (event) => {
+    // --- FIX 1: Ambil file pertama dari FileList ---
+    const file = event.target.files[0] 
+    
+    // Pengecekan ini sekarang akan berfungsi dengan benar
     if (!file) {
       console.log('No file selected')
+      // Reset file input jika pengguna membatalkan
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
       return
     }
 
@@ -81,7 +225,8 @@ export const ImportExport = () => {
 
     try {
       // Manual CSV parsing using FileReader
-      const text = await readFileAsText(file)
+      // 'file' di sini sekarang sudah benar (objek File, bukan FileList)
+      const text = await readFileAsText(file) 
       console.log('File content:', text.substring(0, 200) + '...')
 
       if (!text.trim()) {
@@ -96,13 +241,16 @@ export const ImportExport = () => {
         return
       }
 
-      // Get headers
-      const headers = lines.split(',').map(h => h.trim().replace(/"/g, ''))
+      // --- FIX 2: Ambil baris pertama (lines[0]) untuk header ---
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''))
       console.log('Headers:', headers)
 
       // Parse data rows
       const rows = []
       for (let i = 1; i < lines.length; i++) {
+        // Pastikan baris tidak kosong (sering terjadi jika ada baris kosong di akhir file)
+        if (lines[i].trim() === '') continue 
+
         const values = parseCSVLine(lines[i])
         if (values.length > 0) {
           const row = {}
@@ -190,8 +338,6 @@ export const ImportExport = () => {
       }
     }
   }
-
-  // Helper function to read file as text
   const readFileAsText = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
