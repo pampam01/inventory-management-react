@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
-import { AuthProvider } from './contexts/AuthContext'
-import { InventoryProvider } from './contexts/InventoryContext'
-import { ProtectedRoute } from './components/Auth/ProtectedRoute'
-import { LoginPage } from './pages/LoginPage'
-import { Dashboard } from './pages/Dashboard'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "./contexts/AuthContext";
+import { InventoryProvider } from "./contexts/InventoryContext";
+import { ProtectedRoute } from "./components/Auth/ProtectedRoute";
+import { LoginPage } from "./pages/LoginPage";
+import { Dashboard } from "./pages/Dashboard";
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
         <Toaster position="top-right" />
       </InventoryProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;
